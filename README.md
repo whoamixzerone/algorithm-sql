@@ -1,5 +1,8 @@
 # 알고리즘 문제와 SQL 문제 기록
 
+**bits/stdc++.h** 👉 [gcc github](https://github.com/whoamixzerone/gcc)  
+**gcc > libstdc++-v3 > include > precompiled > stdc++.h** 위치
+
 
 > c++ 선언문들은 "tmwilliamlin168"님의 코드를 참조했습니다.  
 [github](https://github.com/tmwilliamlin168)  
