@@ -1,0 +1,56 @@
+# [Squares of a Sorted Array](https://leetcode.com/explore/learn/card/fun-with-arrays/521/introduction/3240/)
+
+### 출처 LeetCode
+[Squares of a Sorted Array](https://leetcode.com/explore/learn/card/fun-with-arrays/521/introduction/3240/)
+
+#### 시간 복잡도
+**n(1 <= nums.length <= 10^4)**  
+$`O(nlogn)`$
+
+#### 문제 유형
+구현  
+정렬  
+Array
+
+#### 문제 풀이
+
+### c++ 풀이
+```c++
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        for(int i=0; i<nums.size(); ++i) nums[i]*=nums[i];
+        sort(nums.begin(), nums.end());
+        return nums;
+    }
+};
+```
+
+### 다른 사람 풀이
+투 포인터(two pointers) 알고리즘  
+시간 복잡도: $`O(n)`$
+```c++
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> res(n);
+        
+        int l = 0, r = n - 1;
+        int pos = n - 1;
+        
+        while (l <= r) {
+            if (abs(nums[l]) > abs(nums[r])) {
+                res[pos] = nums[l] * nums[l];
+                l++;
+            } else {
+                res[pos] = nums[r] * nums[r];
+                r--;
+            }
+            pos--;
+        }
+        
+        return res;
+    }
+};
+```
