@@ -1,0 +1,49 @@
+# [Merge Sorted Array](https://leetcode.com/explore/learn/card/fun-with-arrays/525/inserting-items-into-an-array/3253/)
+
+### 출처 LeetCode
+[Merge Sorted Array](https://leetcode.com/explore/learn/card/fun-with-arrays/525/inserting-items-into-an-array/3253/)
+
+#### 시간 복잡도
+**m, n(1 <= (nums1.length == m + n) <= 10^4)**   
+$`O(m + n)`$
+
+#### 문제 유형
+구현  
+Array  
+투 포인터(two pointers)
+
+#### 문제 풀이
+뒤에서부터 비교하면서 큰 값을 `nums1[p]`에 채운다. 만약 num2에 아직 남은 값이 있다면 복사
+
+### c++ 풀이
+```c++
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int p1=m-1, p2=n-1, p=m+n-1;
+    
+        while(p1>=0&&p2>=0) {
+            if(nums1[p1]>nums2[p2]) nums1[p]=nums1[p1--];
+            else nums1[p]=nums2[p2--];
+            --p;
+        }
+        while(p2>=0) {
+            nums1[p--]=nums2[p2--];
+        }
+    }
+};
+```
+
+### 다른 사람 풀이
+```c++
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        for (int j = 0, i = m; j<n; j++){
+            nums1[i] = nums2[j];
+            i++;
+        }
+        sort(nums1.begin(),nums1.end());
+    }
+};
+```
