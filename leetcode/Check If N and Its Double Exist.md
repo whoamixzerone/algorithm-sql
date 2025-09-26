@@ -1,0 +1,235 @@
+# [Check If N and Its Double Exist](https://leetcode.com/explore/learn/card/fun-with-arrays/527/searching-for-items-in-an-array/3250/)
+
+### 출처 LeetCode
+[Check If N and Its Double Exist](https://leetcode.com/explore/learn/card/fun-with-arrays/527/searching-for-items-in-an-array/3250/)
+
+#### 시간 복잡도
+**n(2 <= arr.length <= 500)**   
+$`O(n^2)`$
+
+#### 문제 유형
+구현  
+Array
+
+#### 문제 풀이
+
+### c++ 풀이
+```c++
+class Solution {
+public:
+    bool checkIfExist(vector<int>& arr) {
+        for(int i=0; i<arr.size(); ++i) {
+            for(int j=0; j<arr.size(); ++j) {
+                if(i!=j&&arr[i]==2*arr[j]) return true;
+            }
+        }
+        return false;
+    }
+};
+```
+
+### 다른 사람 풀이
+```c++
+class Solution {
+public:
+    bool checkIfExist(vector<int>& arr) {
+        for(int i=0;i<arr.size();i++){
+            for(int j=i+1;j<arr.size();j++){
+                if(arr[i]==2*arr[j] || arr[j]==2*arr[i]){
+                    return true;
+                }
+                
+            }
+        }return false;
+    }
+};
+```
+
+### 공식 해설
+#### 접근법 1: Brute Force (완전탐색)
+간단한 접근 방식 중 하나는 각 숫자의 두 배를 계산한 다음 해당 값이 배열에 있는지 확인.  
+완전 탐색 방법은 결과가 나올 때까지 각 요소에 대해 가능한 모든 쌍을 직접 탐색.  
+이 접근 방식은 작동하지만 가장 효율적이지는 않다.
+
+##### 알고리즘
+- 배열 arr의 모든 인덱스 쌍 `i`와 `j`를 반복
+    - 각 쌍에 대해 확인:
+        - `i != j`
+        - `arr[i] == 2 * arr[j]`
+    - 두 조건이 충족하면 `true` 를 반환
+- 유효한 쌍을 찾지 못하면 `false` 를 반환
+
+##### 복잡도 분석
+- 시간 복잡도: $`O(n^2)`$
+- 공간 복잡도: $`O(1)`$
+
+```c++
+class Solution {
+public:
+    bool checkIfExist(vector<int>& arr) {
+        // Step 1: Iterate through all pairs of indices
+        for (int i = 0; i < arr.size(); i++) {
+            for (int j = 0; j < arr.size(); j++) {
+                // Step 2: Check the conditions
+                if (i != j && arr[i] == 2 * arr[j]) {
+                    return true;
+                }
+            }
+        }
+        // No valid pair found
+        return false;
+    }
+};
+```
+
+#### 접근법 2: Set Lookup (Hash Set)
+배열을 한 번 순회하면서, 순회한 숫자들을 해시 집합에 저장.  
+배열을 여러 번 순회하는 대신에 집합을 사용해 `2 * arr[i]` or `arr[i] / 2` (분할 가능한 경우)가 이미 존재하는지 확인.  
+두 조건 모두 충족되지 않으면 집합에 `arr[i]` 를 추가하고 계속 진행.  
+
+이렇게 하면 배열을 한 번만 반복하고 완전 탐색 방식으로 불필요한 비교를 제거할 수 있다.
+
+##### 알고리즘
+- 순회한 숫자들을 저장하기 위해 `seen` 이라는 이름의 빈 집합을 초기화
+- 배열 `arr` 의 각 `num`에 대해:
+    - `seen` set에 `2 * num` or `num / 2` 가 존재하는지 확인:
+        - set에서 `2 * num` 이 있거나, `num` 이 2로 나눌 수 있고 `num / 2` 가 있으면 `true` 를 반환(유효한 쌍 발견)
+    - 현재 숫자 `num` 을 확인하기 위해 `seen` set에 추가
+- 모든 요소를 확인한 후에도 유효한 쌍을 찾지 못하면 `false` 를 반환
+
+##### 복잡도 분석
+- 시간 복잡도: $`O(n)`$
+- 공간 복잡도: $`O(n)`$
+
+```c++
+class Solution {
+public:
+    bool checkIfExist(vector<int>& arr) {
+        unordered_set<int> seen;
+        for (int num : arr) {
+            // Check if 2 * num or num / 2 exists in the set
+            if (seen.count(2 * num) || (num % 2 == 0 && seen.count(num / 2))) {
+                return true;
+            }
+            // Add the current number to the set
+            seen.insert(num);
+        }
+        // No valid pair found
+        return false;
+    }
+};
+```
+
+#### 접근법 3: Sorting + Binary Search (정렬 + 이진 탐색)
+`i`와 `j`의 값이 모두 0인 경우를 제외하고, `j`는 항상 `i`보다 크다. 두 값 사이의 관계는 방향성이 있으므로, 배열을 오름차순으로 정렬해 이진 검색을 적용할 수 있다.  
+
+이진 탐색은 정렬된 집합에서 값을 효율적으로 찾기 위한 투 포인터(two-pointer) 기법이다. 이진 탐색은 검색 범위를 반복적으로 절반으로 나누어 비교 횟수를 크게 줄인다.
+
+##### 알고리즘
+- `arr` 배열을 오름차순으로 정렬
+- 배열의 각 요소 `arr[i]`에 대해:
+    - `target` 값을 `2 * arr[i]`로 계산
+    - 배열에서 `target`에 대한 이진 검색을 수행:
+        - 검색 범위를 `left`을 0으로, `right`을 `arr.length - 1`로 설정
+        - `left <= right`인 동안 반복하면서, `mid` 중간 값을 계산
+            - `arr[mid] == target`인 경우, 인덱스 `mid`를 반환(해당 값을 찾음)
+            - `arr[mid] < target`인 경우, `left`위치를 `mid + 1`로 이동하여 오른쪽 절반을 검색
+            - `arr[mid] > target`인 경우, `right`위치를 `mid - 1`로 이동하여 왼쪽 절반을 검색
+        - `target`을 못 찾으면 -1을 반환
+    - `target`이 존재하고 해당 인덱스가 현재 인덱스 `i`와 같지 않으면 `true`를 반환(한 요소가 다른 요소의 두 배인 쌍을 찾음)
+- 배열을 반복한 후에도 유효한 쌍을 못찾으면 `false`를 반환
+
+##### 복잡도 분석
+- 시간 복잡도: $`O(nlogn)`$
+- 공간 복잡도: $`O(n) or O(logn)`$
+
+```c++
+class Solution {
+public:
+    bool checkIfExist(vector<int>& arr) {
+        // Step 1: Sort the array
+        sort(arr.begin(), arr.end());
+
+        for (int i = 0; i < arr.size(); i++) {
+            // Step 2: Calculate the target (double of current number)
+            int target = 2 * arr[i];
+            // Step 3: Custom binary search for the target
+            int index = customBinarySearch(arr, target);
+            // If the target exists and is not the same index
+            if (index >= 0 && index != i) {
+                return true;
+            }
+        }
+        // No valid pair found
+        return false;
+    }
+
+private:
+    int customBinarySearch(vector<int>& arr, int target) {
+        int left = 0;
+        int right = arr.size() - 1;
+
+        while (left <= right) {
+            // Avoid potential overflow
+            int mid = left + (right - left) / 2;
+
+            if (arr[mid] == target) {
+                return mid;
+            } else if (arr[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        // Target not found
+        return -1;
+    }
+};
+```
+
+#### 접근법 4: Frequency Hash Map (Hash Map)
+접근법 2에서처럼 Hash Set을 사용하여 쌍을 찾는 대신, Hash Map을 사용할 수 있다.  
+각 숫자의 발생 횟수를 세고 해당 인덱스에 저장한다. 그런 다음, 다시 반복하여 각 요소를 확인한다.
+
+1. `num`이 배열에 있으면, map을 사용해 `2 * num`도 존재하는지 확인.
+2. `num = 0`이면, `i != j`를 만족시키기 위해 카운트가 최소 2가 되도록 보장.
+
+##### 알고리즘
+- 배열에서 각 숫자의 발생 횟수를 저장하기 위해 빈 hash map을 초기화
+- `arr`의 각 숫자 `num`에 대해:
+    - `map`에서 `num`과 연관된 값을 증가시켜 `num`의 개수로 업데이트
+- 2배의 숫자가 존재하는지 확인:
+        - `arr`의 각 `num`에 대해 `num != 0`이 아니고 `map`에 `2 * num`이 포함되어 있으면, `true`를 반환
+        - `num`이 0이고 배열에 0이 두 개 이상 있는 경우(`map.get(num) > 1`), `true`를 반환
+- 해당 쌍을 못찾으면 `false`를 반환
+
+##### 복잡도 분석
+- 시간 복잡도: $`O(n)`$
+- 공간 복잡도: $`O(n)`$
+
+```c++
+class Solution {
+public:
+    bool checkIfExist(vector<int>& arr) {
+        unordered_map<int, int> map;
+
+        // Count occurrences of each number
+        for (int num : arr) {
+            map[num]++;
+        }
+
+        for (int num : arr) {
+            // Check for double
+            if (num != 0 && map.find(2 * num) != map.end()) {
+                return true;
+            }
+            // Handle zero case (ensure there are at least two zeros)
+            if (num == 0 && map[num] > 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+```
